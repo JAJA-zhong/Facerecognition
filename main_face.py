@@ -15,17 +15,17 @@ class Biophoto:
         if os.path.isdir(f"{dir}\\bioface"):
             pass
         else:
-            #文件不存在则创建
+            # 文件不存在则创建
             os.makedirs(f"{dir}\\bioface")
         # 获取目录下所有图片返回列表
         self.listdir = os.listdir(dir)
-        #创建日志记录文件
+        # 创建日志记录文件
         self.logs = open(f"{dir}\\Bioface{gettime()[:10]}.txt", "a", encoding='utf8')
 
     def getface(self, dir):
         # 导入人脸级联分类器引擎，'.xml'文件里包含训练出来的人脸特征
         face_engine = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        #过滤非jpg文件
+        # 过滤非jpg文件
         photonames = filter(lambda x: x.endswith('jpg'), self.listdir)
         for photoname in photonames:
             img = cv2.imread(f'{dir}\\' + photoname, 1)
@@ -43,9 +43,9 @@ class Biophoto:
             # 对每一张脸，进行如下操作
             try:
                 if len(faces) > 0:
-                    for (x, y, w, h) in faces:#人脸坐标
-                        cropped_image = img[y:y + w, x:x + h]#裁剪坐标
-                        cv2.imwrite(f"{dir}\\bioface\\verify_biophoto_9_" + photoname, cropped_image)#保存裁剪
+                    for (x, y, w, h) in faces:  # 人脸坐标
+                        cropped_image = img[y:y + w, x:x + h]  # 裁剪坐标
+                        cv2.imwrite(f"{dir}\\bioface\\verify_biophoto_9_" + photoname, cropped_image)  # 保存裁剪
                         self.logs.write(f"{gettime()} {photoname} 读取人脸成功。\n")
                 else:
                     self.logs.write(f"{gettime()} {photoname} 读取人脸失败----------\n")
