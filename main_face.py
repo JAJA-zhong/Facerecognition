@@ -24,9 +24,8 @@ class Biophoto:
 
     def getface(self, dir):
         # 导入人脸级联分类器引擎，'.xml'文件里包含训练出来的人脸特征
-        global faces
         face_engine = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
+        #过滤非jpg文件
         photonames = filter(lambda x: x.endswith('jpg'), self.listdir)
         for photoname in photonames:
             img = cv2.imread(f'{dir}\\' + photoname, 1)
@@ -42,13 +41,16 @@ class Biophoto:
                 print(e)
 
             # 对每一张脸，进行如下操作
-            if len(faces) > 0:
-                for (x, y, w, h) in faces:
-                    cropped_image = img[y:y + w, x:x + h]
-                    cv2.imwrite(f"{dir}\\bioface\\verify_biophoto_9_" + photoname, cropped_image)
-                    self.logs.write(f"{gettime()} {photoname} 读取人脸成功。\n")
-            else:
-                self.logs.write(f"{gettime()} {photoname} 读取人脸失败----------\n")
+            try:
+                if len(faces) > 0:
+                    for (x, y, w, h) in faces:#人脸坐标
+                        cropped_image = img[y:y + w, x:x + h]#裁剪坐标
+                        cv2.imwrite(f"{dir}\\bioface\\verify_biophoto_9_" + photoname, cropped_image)#保存裁剪
+                        self.logs.write(f"{gettime()} {photoname} 读取人脸成功。\n")
+                else:
+                    self.logs.write(f"{gettime()} {photoname} 读取人脸失败----------\n")
+            except Exception as e:
+                print(f"人脸裁剪失败{e}")
         self.logs.close()
 
 
