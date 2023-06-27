@@ -1,7 +1,8 @@
-import os
+# pip install opencv - python
 
+
+import os
 from datetime import datetime
-# 导入opencv-python
 import cv2
 
 
